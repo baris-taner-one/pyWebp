@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resim Dönüştürücü</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Medya Optimizasyonu</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="files">Dosyalar:</label>
+                <input type="file" name="files" id="files" class="form-control-file" multiple>
+            </div>
+            <div class="form-group">
+                <label for="quality">Kalite:</label>
+                <input type="number" id="quality" name="quality" class="form-control" min="1" max="100" value="80">
+            </div>
+            <button type="button" onclick="uploadFiles()" class="btn btn-primary">Dosyaları Yükle</button>
+        </form>
+        <div id="message" class="mt-3"></div>
+    </div>
+
+    <script>
+        function uploadFiles() {
+            var form = document.getElementById('uploadForm');
+            var formData = new FormData(form);
+            var quality = document.getElementById('quality').value;
+            formData.append('quality', quality);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/convert', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        document.getElementById('message').innerText = JSON.parse(xhr.responseText).message;
+                    } else {
+                        document.getElementById('message').innerText = 'Bir hata oluştu.';
+                    }
+                }
+            };
+
+            xhr.send(formData);
+        }
+    </script>
+</body>
+</html>
